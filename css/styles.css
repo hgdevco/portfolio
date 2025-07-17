@@ -1,0 +1,614 @@
+/* 1) Splash screen fullscreen */
+/* === Splash overlay === */
+#splash {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+  pointer-events: none;
+}
+
+/* Splash-logo : on animera son transform puis son opacity */
+#splash-logo {
+  width: 40vmin;
+  max-width: 300px;
+  transform-origin: center center;
+  /* d’abord on prépare le transform (delay 0.2s), 
+     puis on laissera opacity à 1 jusqu’à la fade finale */
+  transition: transform 0.8s ease-in-out 0.2s,
+              opacity 0.5s ease-in-out;
+}
+
+/* === Nav-logo (dans la navbar) === */
+.navbar .logo img {
+  /* on suppose que c’est l’unique img dans .logo, ou mieux : mettez id="nav-logo" */
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+@keyframes splash-out {
+  to {
+    opacity: 0;
+    transform: scale(1.2);
+  }
+}
+
+/* ==========================================================================
+   1. Variables et reset
+   ========================================================================== */
+   :root {
+    --clr-bg: #121212;
+    --clr-surface: #1e1e1e;
+    --clr-primary: #bb86fc;
+    --clr-primary-variant: #3700b3;
+    --clr-text: #e0e0e0;
+    --clr-text-secondary: #a0a0a0;
+    --transition: 0.3s ease;
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    background: var(--clr-bg);
+    color: var(--clr-text);
+    line-height: 1.6;
+  }
+  
+  main {
+  flex: 1;
+  } 
+
+  main.section-dark {
+  width: 95%;
+  margin: 0.75rem auto;
+  /* pas de justify-content nécessaire */
+}
+  /* ==========================================================================
+     2. Container
+     ========================================================================== */
+  .container {
+    width: 95%;
+    margin: 0.75rem;
+    padding: 2rem 0;
+  }
+  
+  /* ==========================================================================
+     3. Navbar
+     ========================================================================== */
+  .navbar {
+    background: var(--clr-surface);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  }
+  .nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+  }
+  .navbar .logo {
+    display: flex;
+    align-items: center;
+  }
+  .navbar .logo img {
+    height: 75px;
+    width: auto;
+  }
+
+  .navbar .logo-still {
+    display: flex;
+    align-items: center;
+  }
+  .navbar .logo-still img {
+    height: 75px;
+    width: auto;
+  }
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+  }
+  .nav-links a {
+    color: var(--clr-text-secondary);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: background var(--transition);
+  }
+  .nav-links a:hover {
+    background: rgba(255,255,255,0.1);
+  }
+  .nav-links .active {
+    color: var(--clr-primary);
+    background: rgba(187,134,252,0.2);
+  }
+  
+  /* ==========================================================================
+     4. Hero / Présentation
+     ========================================================================== */
+  .hero-dark {
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-variant));
+    text-align: center;
+    padding: 4rem 0;
+    color: white;
+  }
+  .hero-dark h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  .hero-dark p {
+    color: var(--clr-text-secondary);
+    margin-bottom: 2rem;
+  }
+  
+  /* ==========================================================================
+     5. Boutons classiques
+     ========================================================================== */
+  .btn,
+  .btn-outline {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background var(--transition), color var(--transition);
+  }
+  .btn {
+    background: var(--clr-primary);
+    color: var(--clr-bg);
+  }
+  .btn-outline {
+    border: 2px solid var(--clr-primary);
+    color: var(--clr-primary);
+  }
+  .btn-outline:hover {
+    background: var(--clr-primary);
+    color: var(--clr-bg);
+  }
+  
+  /* ==========================================================================
+     6. Boutons icône → texte (inverse)
+     ========================================================================== */
+  .btn-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+  .btn-icon.inverse {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 3.5rem;
+    max-width: 12rem;
+    padding: 0 1rem;
+    border-radius: 4px;
+    background: var(--clr-primary);
+    color: var(--clr-bg);
+    overflow: hidden;
+    text-decoration: none;
+    transition:
+      max-width var(--transition),
+      padding var(--transition),
+      background var(--transition);
+  }
+  .btn-icon.inverse .btn-text {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity var(--transition), transform var(--transition);
+  }
+  .btn-icon.inverse .icon {
+    opacity: 0;
+    transform: translateX(0.5rem);
+    transition: opacity var(--transition), transform var(--transition);
+  }
+  .btn-icon.inverse:hover {
+    max-width: 3.5rem;
+    padding: 0;
+  }
+  .btn-icon.inverse:hover .btn-text {
+    opacity: 0;
+    transform: translateX(-0.5rem);
+  }
+  .btn-icon.inverse:hover .icon {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  /* Couleurs optionnelles */
+  .btn-photos.inverse,
+  .btn-videos.inverse {
+    background: var(--clr-primary);
+  }
+  
+  /* ==========================================================================
+     7. Sections / Titres
+     ========================================================================== */
+  .section-dark {
+    background: var(--clr-surface);
+    padding: 3rem 0;
+    border-radius: 8px;
+    margin: 0.75rem 0;
+    justify-content: center;
+  }
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: var(--clr-primary);
+  }
+  
+  /* ==========================================================================
+     8. Galerie (cards)
+     ========================================================================== */
+  .grid {
+    display: grid;
+    gap: 1.5rem;
+    
+  }
+  .gallery {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+  .videos {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+  .card {
+    background: var(--clr-bg);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+    transition: transform var(--transition), box-shadow var(--transition);
+    text-decoration: none;
+    color: inherit;
+    margin: 0.75rem;
+  }
+  .card img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 12px rgba(0,0,0,0.6);
+  }
+  .card figcaption {
+    padding: 0.75rem;
+    text-align: center;
+    color: var(--clr-text-secondary);
+  }
+  
+  /* ==========================================================================
+     9. Composant Avant / Après
+     ========================================================================== */
+  /* wrapper pour centre l’ensemble */
+.compare-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 2rem auto;
+}
+
+/* zone avant/après */
+.img-compare {
+  position: relative;
+  width: 100%;
+  overflow: hidden;   /* on masque l’excédent de .divider */
+}
+.img-compare-base {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.img-compare-overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 50%;        /* piloté en JS */
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+}
+.img-compare-overlay img {
+  display: block;
+  width: auto;
+  height: 100%;
+}
+.img-compare .divider {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%;         /* piloté en JS */
+  width: 2px;
+  background: rgba(255,255,255,0.8);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* slider repositionné en block sous l’image */
+.img-compare-slider {
+  display: block;
+  width: 100%;
+  margin: 1rem 0;
+  height: 4px;
+  background: rgba(255,255,255,0.3);
+  appearance: none;
+  cursor: ew-resize;
+}
+
+.img-compare-slider::-moz-range-thumb {
+  width: 0; height: 0;
+  margin-top: -6px;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 16px solid var(--clr-primary);
+  position: relative;
+  z-index: 3;
+}
+  
+  /* ==========================================================================
+     10. Footer
+     ========================================================================== */
+  .footer-dark {
+    background: var(--clr-surface);
+    text-align: center;
+    padding: 1.5rem 0;
+    margin-top: 2rem;
+    color: var(--clr-text-secondary);
+  }
+  .footer-dark a {
+    color: var(--clr-primary);
+    text-decoration: none;
+  }
+  .footer-dark a:hover {
+    text-decoration: underline;
+  }
+
+  /* Sélecteur de mode */
+.mode-selector {
+  text-align: center;
+  margin: 2rem 0;
+}
+.mode-selector .mode-btn {
+  background: var(--clr-primary);
+  color: var(--clr-bg);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  margin: 0 0.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.mode-selector .mode-btn:hover {
+  background: var(--clr-primary-variant);
+}
+
+/* On cache toutes les galeries par défaut,
+   elles seront affichées en JS */
+.gallery-mode {
+  display: none;
+}
+
+/* === Cartes de choix “simples” === */
+.mode-cards.simple {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin: 3rem 0;
+}
+
+.mode-cards.simple .mode-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--clr-surface);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 2rem 1rem;
+  text-decoration: none;
+  color: var(--clr-text);
+  transition: 
+    border-color var(--transition),
+    transform var(--transition),
+    background var(--transition);
+}
+
+.mode-cards.simple .mode-card:hover {
+  border-color: var(--clr-primary);
+  background: #1f1f1f;
+  transform: translateY(-4px);
+}
+
+.mode-card-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.mode-card-label {
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Lightbox */
+.lightbox {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  cursor: zoom-out;
+  z-index: 999;
+}
+.lightbox-img {
+  max-width: 90%;
+  max-height: 80%;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+.lightbox-caption {
+  color: white;
+  margin-top: 1rem;
+  font-size: 1rem;
+  text-align: center;
+}
+
+/* Bouton de fermeture */
+.lightbox-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 2rem;
+  line-height: 1;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  z-index: 10;        /* au-dessus de tout */
+  padding: 0;
+}
+.lightbox-close:hover {
+  color: var(--clr-primary);
+}
+
+/* ==== Spécifique aux cartes vidéo ==== */
+/* On retire la marge sur les .card et on s’appuie sur le gap de la grille */
+.video-card {
+  margin: 0.75rem;               /* le gap de la grid suffit */
+  display: flex;
+  flex-direction: column;
+  background: var(--clr-bg);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+/* On force un ratio 16/9 pour la thumbnail vidéo */
+.video-card .video-thumb {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  display: block;
+  cursor: pointer;
+}
+
+/* Légende en bas */
+.video-card figcaption {
+  padding: 0.75rem;
+  text-align: center;
+  color: var(--clr-text-secondary);
+  background: var(--clr-surface);
+  flex-shrink: 0;
+}
+
+/* Hover effect */
+.video-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 12px rgba(0,0,0,0.6);
+}
+
+/* ==== Cartes portrait ==== */
+/* On cible uniquement les cartes “short” */
+.card.video-short-card {
+  display: flex;
+  flex-direction: column;    /* empile verticalement */
+  align-items: stretch;      /* la vidéo prend toute la largeur */
+  margin: 0.75rem;
+  background: var(--clr-bg);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.card.video-short-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 12px rgba(0,0,0,0.6);
+}
+
+/* La miniature prend 100% de la largeur de la carte */
+.video-short-thumb {
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  object-fit: cover;
+  display: block;
+  cursor: pointer;
+}
+
+/* La légende vient **ensuite**, sous la vidéo */
+.card.video-short-card figcaption {
+  order: 1;                  /* premier élément après le thumb */
+  padding: 0.75rem;
+  text-align: center;
+  color: var(--clr-text-secondary);
+  background: var(--clr-surface);
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;                 /* pas de marge latérale */
+}
+
+
+/* Overlay plus compact pour les shorts */
+/* === Lightbox portrait (short) === */
+.lightbox_short {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  flex-direction: column;    /* ← empile verticalement */
+  align-items: center;       /* centre horizontalement */
+  justify-content: center;   /* centre verticalement */
+  padding: 1rem;
+  z-index: 10000;
+}
+
+/* Réduit un peu la taille du player si besoin */
+.lightbox_short-video {
+  max-width: 90%;
+  max-height: 80%;
+  border-radius: 4px;
+}
+
+/* Caption juste en dessous */
+.lightbox_short-caption {
+  color: #fff;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+
+/* Bouton fermer en haut à droite */
+.lightbox_short-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}
+.lightbox_short-close:hover {
+  color: var(--clr-primary);
+}
+
+/* cible ton nouveau logo-still */
+.navbar .logo-still img,
+#nav-logo {
+  display: block;
+  height: 75px;      /* ou la taille que tu souhaites */
+  width: auto;
+}

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vidéos – Mon Portfolio</title>
+  <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="home.html" class="logo-still">
+        <img src="assets/images/HGVS_logo.png" alt="HGVS Logo">
+      </a>
+      <ul class="nav-links">
+        <li><a href="choix_photo.html">Photos</a></li>
+        <li><a href="choix_videos.html" class="active">Vidéos</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container section-dark">
+    <h2>Galerie vidéos</h2>
+    <div class="grid gallery"></div>
+  </main>
+
+  <footer class="footer-dark">
+    <p>© 2025 GUILLEM Hugo – <a href="mailto:hugoguillem1@gmail.com">hugoguillem1@gmail.com</a></p>
+  </footer>
+
+  <!-- Lightbox avec lecteur vidéo -->
+  <div id="lightbox" class="lightbox">
+    <button id="lightbox-close" class="lightbox-close" aria-label="Fermer">×</button>
+    <video controls class="lightbox-video"></video>
+    <p class="lightbox-caption"></p>
+  </div>
+
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+  fetch('manifest.json')
+    .then(res => res.json())
+    .then(manifest => {
+      const videoFiles = manifest.videos || [];
+      videoFiles.sort((a,b) => {
+        const na = parseInt((a.match(/^video(\d+)_/)||[])[1],10)||Infinity;
+        const nb = parseInt((b.match(/^video(\d+)_/)||[])[1],10)||Infinity;
+        return na-nb;
+      });
+
+      const gallery  = document.querySelector('.gallery');
+      const basePath = 'assets/images/videos/';
+
+      videoFiles.forEach(filename => {
+        const title = filename
+          .replace(/\.(mp4|webm|ogg)$/i, '')
+          .replace(/^video\d+_/, '')
+          .replace(/-/g, ' ');
+
+        const fig = document.createElement('figure');
+        fig.className = 'card video-card';
+
+        // miniature vidéo
+        const thumb = document.createElement('video');
+        thumb.className    = 'video-thumb';
+        thumb.src          = basePath + filename;
+        thumb.muted        = true;
+        thumb.playsInline  = true;
+        thumb.preload      = 'metadata';
+        thumb.loop         = true;
+
+        // 1) Quand on connaît la durée, on place le curseur à 2s (par exemple)
+        thumb.addEventListener('loadedmetadata', () => {
+          // tu peux ajuster ce 2 (secondes) pour choisir ton frame
+          const previewTime = Math.min(2, thumb.duration/2);
+          thumb.currentTime = previewTime;
+        });
+
+        thumb.addEventListener('click', () => {
+          openLightbox(basePath + filename, title);
+        });
+        fig.appendChild(thumb);
+
+        const cap = document.createElement('figcaption');
+        cap.textContent = title.charAt(0).toUpperCase() + title.slice(1);
+        fig.appendChild(cap);
+
+        gallery.appendChild(fig);
+      });
+    })
+    .catch(console.error);
+
+  // lightbox setup
+  const lb       = document.getElementById('lightbox');
+  const lbVideo  = lb.querySelector('.lightbox-video');
+  const lbCap    = lb.querySelector('.lightbox-caption');
+  const closeBtn = document.getElementById('lightbox-close');
+
+  function openLightbox(src, caption) {
+    lbVideo.src       = src;
+    lbCap.textContent = caption.charAt(0).toUpperCase() + caption.slice(1);
+    lb.style.display  = 'flex';
+    lbVideo.currentTime = 0;
+    lbVideo.play();
+  }
+
+  closeBtn.addEventListener('click', () => {
+    lbVideo.pause();
+    lb.style.display = 'none';
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      lbVideo.pause();
+      lb.style.display = 'none';
+    }
+  });
+});
+</script>
+
+</body>
+</html>

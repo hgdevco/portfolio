@@ -1,0 +1,13 @@
+{
+  "photos_base": [
+    "photo1_Lac-et-montagne.jpg",
+    "photo2_Plage-des-Maldives.jpg",
+    "photo3_Mariage-de-Jacques-et-Lucie.jpg"
+  ],
+  "photos_edited": [
+    "photo1_Etude-sombre_after.png",
+    "photo1_Etude-sombre_before.png"
+  ],
+  "videos": [],
+  "videos_short": []
+}

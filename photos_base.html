@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Photos – Mon Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="container nav-container">
+        <a href="home.html" class="logo-still">
+            <img src="assets/images/HGVS_logo.png" alt="HGVS Logo">
+        </a>          
+      <ul class="nav-links">
+        <li><a href="choix_photo.html" class="active">Photos</a></li>
+        <li><a href="choix_videos.html">Vidéos</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container section-dark">
+    <h2>Gallerie photos</h2>
+    <div class="grid gallery"><!-- JS injecte les <figure> ici --></div>
+      <!-- Lightbox overlay -->
+  </main>
+
+
+  <footer class="footer-dark">
+    <p>© 2025 GUILLEM Hugo – <a href="mailto:hugoguillem1@gmail.com">hugoguillem1@gmail.com</a></p>
+  </footer>
+
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+  fetch('manifest.json')
+    .then(res => res.json())
+    .then(manifest => {
+      // 1) On récupère la bonne liste depuis manifest
+      const imageFiles = manifest.photos_base;  // ← ici, ou manifest.photos_edited
+
+      // 2) On trie par numéro X
+      imageFiles.sort((a, b) => {
+        const na = parseInt(a.match(/^photo(\d+)_/)[1], 10);
+        const nb = parseInt(b.match(/^photo(\d+)_/)[1], 10);
+        return na - nb;
+      });
+
+      const gallery  = document.querySelector('.gallery');
+      const basePath = 'assets/images/photos_base/';  // ou '…/photos_edited/'
+
+      // 3) Génération des figures
+      imageFiles.forEach(filename => {
+        const title = filename
+          .replace(/\.(jpe?g|png|gif)$/i, '')
+          .replace(/^photo\d+_/, '')
+          .replace(/-/g, ' ');
+
+        const fig = document.createElement('figure');
+        fig.className = 'card';
+
+        const img = document.createElement('img');
+        img.src = basePath + filename;
+        img.alt = title;
+        img.addEventListener('click', () => openLightbox(img.src, title));
+        fig.appendChild(img);
+
+        const cap = document.createElement('figcaption');
+        cap.textContent = title.charAt(0).toUpperCase() + title.slice(1);
+        fig.appendChild(cap);
+
+        gallery.appendChild(fig);
+      });
+    })
+    .catch(err => console.error('Erreur chargement manifest :', err));
+
+  // lightbox setup (inchangé)
+  const lb    = document.getElementById('lightbox');
+  const lbImg = lb.querySelector('.lightbox-img');
+  const lbCap = lb.querySelector('.lightbox-caption');
+  function openLightbox(src, caption) {
+    lbImg.src = src;
+    lbCap.textContent = caption.charAt(0).toUpperCase() + caption.slice(1);
+    lb.style.display = 'flex';
+  }
+  lb.addEventListener('click',     () => lb.style.display = 'none');
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') lb.style.display = 'none';
+  });
+});
+</script>
+
+    <!-- Lightbox overlay -->
+  <div id="lightbox" class="lightbox">
+    <img src="" alt="" class="lightbox-img">
+    <p class="lightbox-caption"></p>
+  </div>
+
+</body>
+</html>

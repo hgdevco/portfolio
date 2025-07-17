@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Photos – Mon Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="container nav-container">
+        <a href="home.html" class="logo-still">
+            <img src="assets/images/HGVS_logo.png" alt="HGVS Logo">
+        </a>          
+      <ul class="nav-links">
+        <li><a href="choix_photo.html" class="active">Photos</a></li>
+        <li><a href="choix_videos.html">Vidéos</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container section-dark">
+    <h2>Gallerie photos</h2>
+    <div class="grid gallery"><!-- JS injecte les <figure> ici --></div>
+      <!-- Lightbox overlay -->
+  </main>
+
+  <!-- Lightbox Avant/Après -->
+<div id="lightbox" class="lightbox">
+  <!-- Croix de fermeture -->
+  <button id="lightbox-close" class="lightbox-close" aria-label="Fermer">×</button>
+
+  <div class="compare-container">
+    <div class="img-compare">
+      <img src="" alt="Avant" class="img-compare-base">
+      <div class="img-compare-overlay">
+        <img src="" alt="Après" class="img-compare-top">
+      </div>
+      <div class="divider"></div>
+    </div>
+    <input type="range" min="0" max="100" value="50" class="img-compare-slider">
+    <p class="lightbox-caption"></p>
+  </div>
+</div>
+
+
+  <footer class="footer-dark">
+    <p>© 2025 GUILLEM Hugo – <a href="mailto:hugoguillem1@gmail.com">hugoguillem1@gmail.com</a></p>
+  </footer>
+
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+  fetch('manifest.json')
+    .then(r => r.json())
+    .then(manifest => {
+      const imageFiles = manifest.photos_edited; 
+      imageFiles.sort((a,b) => {
+        const na = +a.match(/^photo(\d+)_/)[1];
+        const nb = +b.match(/^photo(\d+)_/)[1];
+        return na-nb;
+      });
+
+      const gallery  = document.querySelector('.gallery');
+      const basePath = 'assets/images/photos_edited/';
+
+      imageFiles.forEach(filename => {
+        // on ne veut qu'un thumbnail "after" par photo X
+        if (!filename.endsWith('_after.jpg') && !filename.endsWith('_after.png')) return;
+
+        const title = filename
+          .replace(/_after\.(jpe?g|png|gif)$/i,'')
+          .replace(/^photo\d+_/, '')
+          .replace(/-/g,' ');
+
+        const fig = document.createElement('figure');
+        fig.className = 'card';
+        const thumb = document.createElement('img');
+        thumb.src = basePath + filename;
+        thumb.alt = title;
+        thumb.addEventListener('click', () => {
+          // détermine le before-src
+          const beforeFile = filename.replace('_after', '_before');
+          openLightbox(
+            basePath + beforeFile,
+            basePath + filename,
+            title
+          );
+        });
+        fig.appendChild(thumb);
+
+        const cap = document.createElement('figcaption');
+        cap.textContent = title.charAt(0).toUpperCase() + title.slice(1);
+        fig.appendChild(cap);
+
+        gallery.appendChild(fig);
+      });
+    })
+    .catch(console.error);
+
+  // setup lightbox elements
+  const lb         = document.getElementById('lightbox');
+  const baseImg    = lb.querySelector('.img-compare-base');
+  const topImg     = lb.querySelector('.img-compare-top');
+  const slider     = lb.querySelector('.img-compare-slider');
+  const divider    = lb.querySelector('.divider');
+  const caption    = lb.querySelector('.lightbox-caption');
+  const closeEl = document.getElementById('lightbox-close');
+
+  function openLightbox(srcBefore, srcAfter, title) {
+    // Remplir les images et le titre
+    baseImg.src = srcBefore;
+    topImg.src  = srcAfter;
+    caption.textContent = title.charAt(0).toUpperCase() + title.slice(1);
+
+    // Reset slider
+    slider.value = 50;
+    divider.style.left      = '50%';
+    lb.querySelector('.img-compare-overlay').style.width = '50%';
+
+    // Affiche la lightbox
+    lb.style.display = 'flex';
+  }
+
+  // slider move
+  slider.addEventListener('input', () => {
+    const pct = slider.value + '%';
+    lb.querySelector('.img-compare-overlay').style.width = pct;
+    divider.style.left = pct;
+  });
+
+  // Fermer au clic sur la croix
+  closeEl.addEventListener('click', () => {
+    lb.style.display = 'none';
+  });
+
+  // Fermer avec Échap
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      lb.style.display = 'none';
+    }
+  });
+});
+</script>
+
+</body>
+</html>

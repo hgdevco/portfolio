@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vidéos portrait – Mon Portfolio</title>
+  <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="home.html" class="logo-still">
+        <img src="assets/images/HGVS_logo.png" alt="HGVS Logo">
+      </a>
+      <ul class="nav-links">
+        <li><a href="choix_photo.html">Photos</a></li>
+        <li><a href="choix_videos.html" class="active">Vidéos</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container section-dark">
+    <h2>Galerie vidéos portrait</h2>
+    <div class="grid gallery"><!-- JS injecte les <figure> ici --></div>
+  </main>
+
+  <footer class="footer-dark">
+    <p>© 2025 GUILLEM Hugo – <a href="mailto:hugoguillem1@gmail.com">hugoguillem1@gmail.com</a></p>
+  </footer>
+
+  <!-- Lightbox dédié aux shorts (plus compact) -->
+  <div id="lightbox-short" class="lightbox_short">
+    <button id="lightbox-short-close" class="lightbox_short-close" aria-label="Fermer">×</button>
+    <video controls class="lightbox_short-video"></video>
+    <p class="lightbox_short-caption"></p>
+  </div>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    fetch('manifest.json')
+      .then(res => res.json())
+      .then(manifest => {
+        const videoFiles = manifest.videos_short || [];
+        videoFiles.sort((a,b) => {
+          const na = parseInt((a.match(/^video(\d+)_/)||[])[1],10) || Infinity;
+          const nb = parseInt((b.match(/^video(\d+)_/)||[])[1],10) || Infinity;
+          return na - nb;
+        });
+
+        const gallery  = document.querySelector('.gallery');
+        const basePath = 'assets/images/videos_short/';
+
+        videoFiles.forEach(filename => {
+          const title = filename
+            .replace(/\.(mp4|webm|ogg)$/i,'')
+            .replace(/^video\d+_/,'')
+            .replace(/-/g,' ');
+
+          const fig = document.createElement('figure');
+          fig.className = 'card video-short-card';
+
+          const thumb = document.createElement('video');
+          thumb.className    = 'video-short-thumb';
+          thumb.src          = basePath + filename;
+          thumb.muted        = true;
+          thumb.playsInline  = true;
+          thumb.preload      = 'metadata';
+          thumb.loop         = true;
+
+          thumb.addEventListener('loadedmetadata', () => {
+            const previewTime = Math.min(2, thumb.duration/2);
+            thumb.currentTime = previewTime;
+          });
+
+          // Ici on appelle bien openLightboxShort, pas openLightbox
+          thumb.addEventListener('click', () => {
+            openLightboxShort(basePath + filename, title);
+          });
+
+          fig.appendChild(thumb);
+
+          const cap = document.createElement('figcaption');
+          cap.textContent = title.charAt(0).toUpperCase() + title.slice(1);
+          fig.appendChild(cap);
+
+          gallery.appendChild(fig);
+        });
+      })
+      .catch(console.error);
+
+    // Lightbox setup
+    const lbShort      = document.getElementById('lightbox-short');
+    const lbShortVid   = lbShort.querySelector('.lightbox_short-video');
+    const lbShortCap   = lbShort.querySelector('.lightbox_short-caption');
+    const lbShortClose = document.getElementById('lightbox-short-close');
+
+    function openLightboxShort(src, caption) {
+      lbShortVid.src         = src;
+      lbShortCap.textContent = caption;
+      lbShort.style.display  = 'flex';
+      lbShortVid.currentTime = 0;
+      lbShortVid.play();
+    }
+
+    lbShortClose.addEventListener('click', () => {
+      lbShortVid.pause();
+      lbShort.style.display = 'none';
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        lbShortVid.pause();
+        lbShort.style.display = 'none';
+      }
+    });
+  });
+  </script>
+</body>
+</html>
