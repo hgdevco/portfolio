@@ -11,4 +11,3 @@ permalink: /:title/
 exclude:
   - manifest.json
   - CNAME
-  - assets/images
