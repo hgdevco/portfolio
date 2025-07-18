@@ -15,7 +15,7 @@ title: photos base
   <nav class="navbar">
     <div class="container nav-container">
         <a href="../home/" class="logo-still">
-            <img src="assets/images/HGVS_logo.png" alt="HGVS Logo">
+            <img src="../assets/images/HGVS_logo.png" alt="HGVS Logo">
         </a>          
       <ul class="nav-links">
         <li><a href="../choix-photos/" class="active">Photos</a></li>
@@ -37,7 +37,7 @@ title: photos base
 
   <script>
 document.addEventListener('DOMContentLoaded', () => {
-  fetch('manifest.json')
+  fetch('../manifest.json')
     .then(res => res.json())
     .then(manifest => {
       // 1) On récupère la bonne liste depuis manifest
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       const gallery  = document.querySelector('.gallery');
-      const basePath = 'assets/images/photos_base/';  // ou '…/photos_edited/'
+      const basePath = '../assets/images/photos_base/';  // ou '…/photos_edited/'
 
       // 3) Génération des figures
       imageFiles.forEach(filename => {
