@@ -27,7 +27,7 @@
 
   <main class="container section-dark">
     <h2>Galerie vidéos</h2>
-    <div class="grid gallery"></div>
+    <div class="long-video-gallery"></div>
   </main>
 
   <footer class="footer-dark">
@@ -42,86 +42,98 @@
   </div>
 
   <script>
-document.addEventListener('DOMContentLoaded', () => {
-  fetch('../manifest.json')
-    .then(res => res.json())
-    .then(manifest => {
-      const videoFiles = manifest.videos || [];
-      videoFiles.sort((a,b) => {
-        const na = parseInt((a.match(/^video(\d+)_/)||[])[1],10)||Infinity;
-        const nb = parseInt((b.match(/^video(\d+)_/)||[])[1],10)||Infinity;
-        return na-nb;
+    document.addEventListener('DOMContentLoaded', () => {
+      fetch('../manifest.json')
+        .then(res => res.json())
+        .then(manifest => {
+          const videoEntries = (manifest.videos || []).filter(v => 
+            v.filename.startsWith("video_longue")
+          );
+
+          const gallery  = document.querySelector('.long-video-gallery');
+          const basePath = 'https://videos-hgdevco.s3.eu-west-3.amazonaws.com/';
+
+          videoEntries.forEach((video, index) => {
+            const { filename, description } = video;
+
+            const title = filename
+              .replace(/\.(mp4|webm|ogg)$/i, '')
+              .replace(/^video_longue\d+_/, '')
+              .replace(/-/g, ' ');
+
+            const row = document.createElement('div');
+            row.className = 'video-row ' + (index % 2 === 0 ? 'even' : 'odd');
+
+            const videoDiv = document.createElement('div');
+            videoDiv.className = 'video-wrapper';
+
+            const thumb = document.createElement('video');
+            thumb.className    = 'video-thumb';
+            thumb.src          = basePath + filename;
+            thumb.muted        = true;
+            thumb.playsInline  = true;
+            thumb.preload      = 'metadata';
+            thumb.loop         = true;
+
+            thumb.addEventListener('loadedmetadata', () => {
+              const previewTime = Math.min(2, thumb.duration / 2);
+              thumb.currentTime = previewTime;
+            });
+
+            thumb.addEventListener('click', () => {
+              openLightbox(basePath + filename, title);
+            });
+
+            videoDiv.appendChild(thumb);
+
+            const descDiv = document.createElement('div');
+            descDiv.className = 'video-description';
+            descDiv.innerHTML = `
+              <h3>${title.charAt(0).toUpperCase() + title.slice(1)}</h3>
+              <p>${description || ''}</p>
+            `;
+
+            if (index % 2 === 0) {
+              // pair (even) : image gauche
+              row.appendChild(videoDiv);
+              row.appendChild(descDiv);
+            } else {
+              row.appendChild(descDiv);
+              row.appendChild(videoDiv);
+            }
+
+            gallery.appendChild(row);
+          });
+        })
+        .catch(console.error);
+
+      // lightbox setup
+      const lb       = document.getElementById('lightbox');
+      const lbVideo  = lb.querySelector('.lightbox-video');
+      const lbCap    = lb.querySelector('.lightbox-caption');
+      const closeBtn = document.getElementById('lightbox-close');
+
+      function openLightbox(src, caption) {
+        lbVideo.src       = src;
+        lbCap.textContent = caption.charAt(0).toUpperCase() + caption.slice(1);
+        lb.style.display  = 'flex';
+        lbVideo.currentTime = 0;
+        lbVideo.play();
+      }
+
+      closeBtn.addEventListener('click', () => {
+        lbVideo.pause();
+        lb.style.display = 'none';
       });
 
-      const gallery  = document.querySelector('.gallery');
-      const basePath = '../assets/images/videos/';
-
-      videoFiles.forEach(filename => {
-        const title = filename
-          .replace(/\.(mp4|webm|ogg)$/i, '')
-          .replace(/^video\d+_/, '')
-          .replace(/-/g, ' ');
-
-        const fig = document.createElement('figure');
-        fig.className = 'card video-card';
-
-        // miniature vidéo
-        const thumb = document.createElement('video');
-        thumb.className    = 'video-thumb';
-        thumb.src          = basePath + filename;
-        thumb.muted        = true;
-        thumb.playsInline  = true;
-        thumb.preload      = 'metadata';
-        thumb.loop         = true;
-
-        // 1) Quand on connaît la durée, on place le curseur à 2s (par exemple)
-        thumb.addEventListener('loadedmetadata', () => {
-          // tu peux ajuster ce 2 (secondes) pour choisir ton frame
-          const previewTime = Math.min(2, thumb.duration/2);
-          thumb.currentTime = previewTime;
-        });
-
-        thumb.addEventListener('click', () => {
-          openLightbox(basePath + filename, title);
-        });
-        fig.appendChild(thumb);
-
-        const cap = document.createElement('figcaption');
-        cap.textContent = title.charAt(0).toUpperCase() + title.slice(1);
-        fig.appendChild(cap);
-
-        gallery.appendChild(fig);
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+          lbVideo.pause();
+          lb.style.display = 'none';
+        }
       });
-    })
-    .catch(console.error);
-
-  // lightbox setup
-  const lb       = document.getElementById('lightbox');
-  const lbVideo  = lb.querySelector('.lightbox-video');
-  const lbCap    = lb.querySelector('.lightbox-caption');
-  const closeBtn = document.getElementById('lightbox-close');
-
-  function openLightbox(src, caption) {
-    lbVideo.src       = src;
-    lbCap.textContent = caption.charAt(0).toUpperCase() + caption.slice(1);
-    lb.style.display  = 'flex';
-    lbVideo.currentTime = 0;
-    lbVideo.play();
-  }
-
-  closeBtn.addEventListener('click', () => {
-    lbVideo.pause();
-    lb.style.display = 'none';
-  });
-
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-      lbVideo.pause();
-      lb.style.display = 'none';
-    }
-  });
-});
-</script>
+    });
+  </script>
 
 </body>
 </html>

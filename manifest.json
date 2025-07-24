@@ -5,9 +5,20 @@
     "photo3_Mariage-de-Jacques-et-Lucie.jpg"
   ],
   "photos_edited": [
-    "photo1_Shooting-à-thème_after.jpg",
-    "photo1_Shooting-à-thème_before.jpg"
+    "photo1_Etude-sombre_after.png",
+    "photo1_Etude-sombre_before.png"
   ],
-  "videos": [],
-  "videos_short": []
+  "videos": [
+    {
+      "filename": "video_courte1_Aftermovie-BDE-Polytech-Marseille.mp4"
+    },
+    {
+      "filename": "video_longue1_Projet-personnel-TV-SHOW.mp4",
+      "description": "Vidéo pour ma chaîne Youtube. Je voulais m'essayer à un format type \"Show tv\" afin d'avoir plusieurs caméras, un planning des épreuves... Je voulais également travailler la post-production avec des animations entre les jeux, faire des voix-off etc..."
+    },
+    {
+      "filename": "video_longue2_Plans-drone.mp4",
+      "description": "Plans de drone pour me fmailiariser avec les commandes blabla je meuble pour tester mon site"
+    }
+  ]
 }

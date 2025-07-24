@@ -459,6 +459,12 @@
   max-height: 80%;
   box-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }
+.lightbox video {
+  max-width: 90%;
+  max-height: 80%;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
 .lightbox-caption {
   color: white;
   margin-top: 1rem;
@@ -628,3 +634,87 @@
   max-width: 90%;
   max-height: 90%;
 }
+
+/* === Disposition alternée vidéo + description === */
+.video-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: flex-start;
+  margin-bottom: 2.5rem;
+}
+
+.video-description {
+  flex: 1 1 400px;
+  min-width: 0;
+  padding: 0 1rem;
+}
+
+.video-description h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: var(--clr-primary);
+}
+
+.video-description p {
+  font-size: 1rem;
+  color: var(--clr-text-secondary);
+  line-height: 1.6;
+}
+
+.video-wrapper {
+  display: flex;
+  align-items: flex-start;
+  flex: none;
+}
+
+.video-wrapper.odd {
+  margin-left: auto; /* pousse la vidéo à droite */
+}
+
+.video-wrapper video {
+  width: 100%;
+  max-width: 300px;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.video-wrapper video:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 12px rgba(0,0,0,0.6);
+}
+
+.long-video-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+/* === Responsive : sur petit écran, on empile vidéo et texte === */
+@media (max-width: 768px) {
+  .video-row {
+    flex-direction: column;
+  }
+
+  .video-wrapper,
+  .video-description {
+    flex: 1 1 100%;
+    padding: 0;
+  }
+
+  .video-description {
+    margin-top: 1rem;
+    text-align: left;
+  }
+
+  /* SUR MOBILE SEULEMENT : on inverse l’ordre des enfants pour odd */
+  .video-row.odd {
+    flex-direction: column-reverse;
+  }
+}
+
+
