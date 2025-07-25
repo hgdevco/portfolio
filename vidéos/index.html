@@ -46,11 +46,11 @@
       fetch('../manifest.json')
         .then(res => res.json())
         .then(manifest => {
-          const videoEntries = (manifest.videos || []).filter(v => 
+          const videoEntries = (manifest.videos || []).filter(v =>
             v.filename.startsWith("video_longue")
           );
 
-          const gallery  = document.querySelector('.long-video-gallery');
+          const gallery = document.querySelector('.long-video-gallery');
           const basePath = 'https://videos-hgdevco.s3.eu-west-3.amazonaws.com/';
 
           videoEntries.forEach((video, index) => {
@@ -62,18 +62,19 @@
               .replace(/-/g, ' ');
 
             const row = document.createElement('div');
-            row.className = 'video-row ' + (index % 2 === 0 ? 'even' : 'odd');
+            const isOdd = index % 2 === 1;
+            row.className = 'video-row ' + (isOdd ? 'odd' : 'even');
 
             const videoDiv = document.createElement('div');
             videoDiv.className = 'video-wrapper';
 
             const thumb = document.createElement('video');
-            thumb.className    = 'video-thumb';
-            thumb.src          = basePath + filename;
-            thumb.muted        = true;
-            thumb.playsInline  = true;
-            thumb.preload      = 'metadata';
-            thumb.loop         = true;
+            thumb.className = 'video-thumb';
+            thumb.src = basePath + filename;
+            thumb.muted = true;
+            thumb.playsInline = true;
+            thumb.preload = 'metadata';
+            thumb.loop = true;
 
             thumb.addEventListener('loadedmetadata', () => {
               const previewTime = Math.min(2, thumb.duration / 2);
@@ -88,18 +89,25 @@
 
             const descDiv = document.createElement('div');
             descDiv.className = 'video-description';
+
+            if (isOdd && description) {
+              const avgCharWidth = 7.5;
+              const textLength = description.length;
+              const estimatedMaxWidth = textLength * avgCharWidth;
+              descDiv.style.maxWidth = estimatedMaxWidth + 'px';
+            }
+
             descDiv.innerHTML = `
               <h3>${title.charAt(0).toUpperCase() + title.slice(1)}</h3>
               <p>${description || ''}</p>
             `;
 
-            if (index % 2 === 0) {
-              // pair (even) : image gauche
-              row.appendChild(videoDiv);
+            if (isOdd) {
               row.appendChild(descDiv);
+              row.appendChild(videoDiv);
             } else {
-              row.appendChild(descDiv);
               row.appendChild(videoDiv);
+              row.appendChild(descDiv);
             }
 
             gallery.appendChild(row);
@@ -108,15 +116,15 @@
         .catch(console.error);
 
       // lightbox setup
-      const lb       = document.getElementById('lightbox');
-      const lbVideo  = lb.querySelector('.lightbox-video');
-      const lbCap    = lb.querySelector('.lightbox-caption');
+      const lb = document.getElementById('lightbox');
+      const lbVideo = lb.querySelector('.lightbox-video');
+      const lbCap = lb.querySelector('.lightbox-caption');
       const closeBtn = document.getElementById('lightbox-close');
 
       function openLightbox(src, caption) {
-        lbVideo.src       = src;
+        lbVideo.src = src;
         lbCap.textContent = caption.charAt(0).toUpperCase() + caption.slice(1);
-        lb.style.display  = 'flex';
+        lb.style.display = 'flex';
         lbVideo.currentTime = 0;
         lbVideo.play();
       }

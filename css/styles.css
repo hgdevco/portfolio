@@ -694,26 +694,41 @@
   gap: 2.5rem;
 }
 
+.video-row.odd {
+  display: flex;
+  justify-content: space-between; /* Laisse le flex fonctionner normalement */
+  align-items: center; /* Aligne verticalement */
+}
+
+.video-row.odd .video-description {
+  margin-left: auto; /* pousse le texte vers la vidéo */
+  text-align: left; /* conserve l’alignement français */
+}
+
 /* === Responsive : sur petit écran, on empile vidéo et texte === */
 @media (max-width: 768px) {
   .video-row {
     flex-direction: column;
   }
 
-  .video-wrapper,
-  .video-description {
-    flex: 1 1 100%;
-    padding: 0;
+  .video-row.odd {
+    flex-direction: column-reverse;
+  }
+
+  .video-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%; /* prend toute la largeur pour pouvoir centrer l’enfant */
+  }
+
+  .video-wrapper video {
+    max-width: 100%;
+    height: auto;
   }
 
   .video-description {
     margin-top: 1rem;
     text-align: left;
-  }
-
-  /* SUR MOBILE SEULEMENT : on inverse l’ordre des enfants pour odd */
-  .video-row.odd {
-    flex-direction: column-reverse;
   }
 }
 
