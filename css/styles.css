@@ -705,6 +705,47 @@
   text-align: left; /* conserve l’alignement français */
 }
 
+.gear-layout {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.gear-left img {
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.gear-left {
+  flex: 0 0 auto;
+  max-width: 300px;
+}
+
+.gear-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.gear-text {
+  flex-grow: 1;
+}
+
+.gear-camera-img {
+  margin-top: 1rem;
+  text-align: right;
+}
+
+.gear-camera-img img {
+  max-width: 200px;
+  height: auto;
+  opacity: 0.95;
+}
+
 /* === Responsive : sur petit écran, on empile vidéo et texte === */
 @media (max-width: 768px) {
   .video-row {
