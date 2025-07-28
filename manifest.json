@@ -1,8 +1,7 @@
 {
   "photos_base": [
-    "photo1_Lac-et-montagne.jpg",
-    "photo2_Plage-des-Maldives.jpg",
-    "photo3_Mariage-de-Jacques-et-Lucie.jpg"
+    "photo1_Portrait.png",
+    "photo2_Shooting-à-thème.png"
   ],
   "photos_edited": [
     "photo1_Shooting-à-thème_after.jpg",
@@ -13,11 +12,11 @@
       "filename": "video_courte1_Aftermovie-BDE-Polytech-Marseille.mp4"
     },
     {
-      "filename": "video_courte2_Vlog-voyage-à-Athènes-agence-MUSEOCOM.mp4"
-    },
-    {
       "filename": "video_longue1_Projet-personnel-TV-SHOW.mp4",
       "description": "Vidéo pour ma chaîne Youtube. Je voulais m'essayer à un format type \"Show tv\" afin d'avoir plusieurs caméras, un planning des épreuves... Je voulais également travailler la post-production avec des animations entre les jeux, faire des voix-off etc..."
+    },
+    {
+      "filename": "video_courte2_Vlog-voyage-à-Athènes-agence-MUSEOCOM.mp4"
     },
     {
       "filename": "video_longue2_Compilation-highlight-joueuse-de-football.mp4",
